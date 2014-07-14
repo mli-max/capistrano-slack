@@ -87,7 +87,13 @@ module Capistrano
               start_time = fetch(:start_time)
               elapsed = end_time.to_i - start_time.to_i
 
-              msg = if fetch(:branch, nil)
+              msg = ''
+
+              if slack_application == 'GES'
+                msg = '@asya, @anna: '
+              end
+
+              msg += if fetch(:branch, nil)
                       "#{announced_deployer} deployed #{slack_application}'s #{branch}"
                     else
                       "#{announced_deployer} deployed #{slack_application}"
@@ -107,10 +113,6 @@ module Capistrano
 
               # Make the actual request to the API
               response = http.request(request)
-
-            rescue Faraday::Error::ParsingError
-              # FIXME deal with crazy color output instead of rescuing
-              # it's stuff like: ^[[0;33m and ^[[0m
             end
           end
         end
